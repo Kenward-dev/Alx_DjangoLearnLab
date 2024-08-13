@@ -3,10 +3,10 @@ from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library
 
-def book_list(request):
+def list_books(request):
     books = Book.objects.all()
-    book_list = [f"{book.title} by {book.author}" for book in books]
-    return render(request, 'relationship_app/list_books.html', {'book_list': book_list})
+    list_book = [f"{book.title} by {book.author}" for book in books]
+    return render(request, 'relationship_app/list_books.html', {'list_book': list_book})
 
 class LibraryDetailView(DetailView):
     model = Library
