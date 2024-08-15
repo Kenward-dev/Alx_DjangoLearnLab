@@ -8,7 +8,8 @@ from .models import Book
 from .models import Library
 from .models import UserProfile
 from django.views import View
-from django.contrib.auth.decorators import user_passes_test, permission_required
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
 
 def list_books(request):
     books = Book.objects.all()
