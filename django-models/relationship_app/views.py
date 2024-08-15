@@ -34,9 +34,18 @@ class register(View):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            UserProfile.objects.create(user=user, role='Member')
-            return redirect('login')  
+            
+            # Determine the redirect URL based on the user's role
+            if user.userprofile.role == 'Admin':
+                return redirect('admin_view')
+            elif user.userprofile.role == 'Librarian':
+                return redirect('librarian_view')
+            else:
+                return redirect('member_view')
+    
+    # If the form is not valid, re-render the registration form with errors
         return render(request, 'relationship_app/register.html', {'form': form})
+
     
     
 def is_admin(user):
@@ -53,7 +62,10 @@ def is_member(user):
 def admin_view(request):
     context = {
         'role': 'Admin',
-        'message': 'Welcome to the Admin Dashboard'
+        'message': 'Welcome to the Admin Dashboard',
+        'total_books': Book.objects.count(),
+        'total_members': UserProfile.objects.filter(role='Member').count(),
+        'total_librarians': UserProfile.objects.filter(role='Librarian').count(),
     }
     return render(request, 'relationship_app/admin_view.html', context)
 
