@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.detail import DetailView
 from .models import Book
 from .models import Library
+from .models import UserProfile
 from django.views import View
 from django.contrib.auth.decorators import user_passes_test
 
@@ -33,6 +34,7 @@ class register(View):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            UserProfile.objects.create(user=user, role='Member')
             return redirect('login')  
         return render(request, 'relationship_app/register.html', {'form': form})
     
