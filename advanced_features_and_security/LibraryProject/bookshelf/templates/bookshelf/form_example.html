@@ -5,11 +5,12 @@
     <title>List of Books</title>
 </head>
 <body>
-        <h1>Form Example</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Form Example</button>
-        </form>
+    <h2>Add a New Book</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    
 </body>
 </html>
