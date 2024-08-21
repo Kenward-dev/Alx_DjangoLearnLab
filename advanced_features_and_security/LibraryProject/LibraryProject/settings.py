@@ -26,6 +26,17 @@ SECRET_KEY = 'django-insecure-ml)=j4wv*x82r=20zb_-52ek^&7h3&sa=3t1)f)u59c*u7h-50
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Additional Security Headers
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
 # Prevent content type sniffing
