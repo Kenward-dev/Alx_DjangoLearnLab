@@ -39,7 +39,24 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshelf',
+    'csp'
 ]
+
+#csp configuration
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'",)
+CSP_IMG_SRC = ("'self'",)
+CSP_FONT_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
+CSP_FRAME_SRC = ("'self'",)
+CSP_OBJECT_SRC = ("'none'",)
+CSP_MEDIA_SRC = ("'self'",)
+CSP_BASE_URI = ("'self'",)
+CSP_FRAME_ANCESTORS = ("'none'",)
+
+CSP_REPORT_URI = '/csp-report/'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
