@@ -45,8 +45,8 @@ class Book(models.Model):
     class Meta:
         permissions = [
             ('can_view', 'Can view book'),
-            ('cab_create', 'Can create book'),
-            ('cab_delete', 'Can delete book'),
+            ('can_create', 'Can create book'),
+            ('can_delete', 'Can delete book'),
         ]
     
     def __str__(self):
