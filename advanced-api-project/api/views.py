@@ -5,21 +5,16 @@ from rest_framework.response import Response
 from rest_framework import status 
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework.generics import (
-    ListAPIView, 
-    RetrieveAPIView,
-    CreateAPIView,
-    UpdateAPIView,
-    DestroyAPIView
-    )
+from rest_framework import generics
+from django_filters import rest_framework
 
 # ListView for retrieving all books
-class BookListView(ListAPIView):
+class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
     # Adding filtering, searching, and ordering backends
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    filter_backends = [rest_framework.DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
 
     # Fields to search in
     search_fields = ['title', 'author', 'publication_year']
@@ -35,7 +30,7 @@ class BookListView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]  
 
 # DetailView for retrieving a single book by ID
-class BookDetailView(RetrieveAPIView):
+class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
@@ -43,7 +38,7 @@ class BookDetailView(RetrieveAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 # CreateView for adding a new book
-class BookCreateView(CreateAPIView):
+class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
@@ -57,7 +52,7 @@ class BookCreateView(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # UpdateView for modifying an existing book
-class BookUpdateView(UpdateAPIView):
+class BookUpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
@@ -65,7 +60,7 @@ class BookUpdateView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
 # DeleteView for removing a book
-class BookDeleteView(DestroyAPIView):
+class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
 
     # Restrict access to authenticated users
