@@ -2,7 +2,8 @@ from .models import Book
 from .models import Author
 from .seriealizers import BookSerializer
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status 
+from rest_framework import filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.generics import (
     ListAPIView, 
@@ -16,6 +17,19 @@ from rest_framework.generics import (
 class BookListView(ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+
+    # Adding filtering, searching, and ordering backends
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+
+    # Fields to search in
+    search_fields = ['title', 'author', 'publication_year']
+
+    # Fields to filter by
+    filterset_fields = ['title', 'author__name', 'publication_year']
+
+    # Fields to order by
+    ordering_fields = ['title', 'publication_date']
+
 
     # Allow read-only access
     permission_classes = [IsAuthenticatedOrReadOnly]  
