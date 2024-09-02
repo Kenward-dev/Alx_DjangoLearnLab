@@ -1,10 +1,9 @@
 from .models import Book
 from .models import Author
 from .seriealizers import BookSerializer
-from .seriealizers import AuthorSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.generics import (
     ListAPIView, 
     RetrieveAPIView,
@@ -19,7 +18,7 @@ class BookListView(ListAPIView):
     serializer_class = BookSerializer
 
     # Allow read-only access
-    permission_classes = [AllowAny]  
+    permission_classes = [IsAuthenticatedOrReadOnly]  
 
 # DetailView for retrieving a single book by ID
 class BookDetailView(RetrieveAPIView):
@@ -27,7 +26,7 @@ class BookDetailView(RetrieveAPIView):
     serializer_class = BookSerializer
 
     # Allow read-only access
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 # CreateView for adding a new book
 class BookCreateView(CreateAPIView):
