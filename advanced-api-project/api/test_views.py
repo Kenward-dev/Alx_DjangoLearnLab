@@ -10,7 +10,7 @@ class BookTestCase(APITestCase):
     def setUp(self):
         # Create a user and log them in
         self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username='testuser', password='testpass')
 
         # Create an author
         self.author = Author.objects.create(name='Chinua Achebe')
@@ -81,17 +81,17 @@ class BookTestCase(APITestCase):
         # Ensure publication_year is not None before comparison
         valid_books = [book for book in books if book['publication_year'] is not None]
         self.assertTrue(all(valid_books[i]['publication_year'] <= valid_books[i+1]['publication_year']
-                           for i in range(len(valid_books)-1)))
+                        for i in range(len(valid_books)-1)))
 
     def test_permissions(self):
         # Testing without login (should be forbidden)
-        self.client.force_authenticate(user=None)
+        self.client.logout()
         url = reverse('book-create')
         data = {'title': 'New Book', 'publication_year': 2024, 'author': self.author.id}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # HTTP 403 Forbidden for unauthenticated user
 
         # Testing with login (should be successful)
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username='testuser', password='testpass')
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # HTTP 201 Created
