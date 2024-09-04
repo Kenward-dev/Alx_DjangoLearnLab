@@ -2,6 +2,8 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from django.contrib.auth.models import User
 from api.models import Book, Author
+from django.core.management import call_command
+from rest_framework import status
 
 class BookTestCase(APITestCase):
 
@@ -20,46 +22,51 @@ class BookTestCase(APITestCase):
         url = reverse('book-create')
         data = {'title': 'New Book', 'publication_year': 2024, 'author': self.author.id}
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, 201)  # HTTP 201 Created
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # HTTP 201 Created
         self.assertEqual(Book.objects.count(), 2)  # Check if the book count increased
 
     def test_read_book(self):
         url = reverse('book-detail', kwargs={'pk': self.book.pk})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)  # HTTP 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # HTTP 200 OK
         self.assertContains(response, 'Things Fall Apart')  # Check if the response contains the book title
 
     def test_update_book(self):
         url = reverse('book-update', kwargs={'pk': self.book.pk})
         data = {'title': 'Updated Book', 'publication_year': 2023, 'author': self.author.id}
         response = self.client.put(url, data, content_type='application/json')  # Ensure correct content type
-        self.assertEqual(response.status_code, 200)  # HTTP 200 OK
+
+        # Use debug_response() to get more information about the response
+        call_command('debug_response', response)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # HTTP 200 OK
+        self.assertEqual(response.data['title'], 'Updated Book')  # Check if the book title was updated
         self.book.refresh_from_db()
-        self.assertEqual(self.book.title, 'Updated Book')  # Check if the book title was updated
+        self.assertEqual(self.book.title, 'Updated Book')
 
     def test_delete_book(self):
         url = reverse('book-delete', kwargs={'pk': self.book.pk})
         response = self.client.delete(url)  # Use DELETE for removing
-        self.assertEqual(response.status_code, 204)  # HTTP 204 No Content
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)  # HTTP 204 No Content
         self.assertEqual(Book.objects.count(), 0)  # Check if the book was deleted
 
     def test_filter_books(self):
         url = reverse('book-list')
         response = self.client.get(url, {'title': 'Things Fall Apart'})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)  # Only one book should match the filter
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)  # Only one book should match the filter
 
     def test_search_books(self):
         url = reverse('book-list')
 
         # Searching by book title
         response = self.client.get(url, {'title__icontains': 'Things'})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, 'Things Fall Apart')
 
         # Searching by author name
         response = self.client.get(url, {'author__name__icontains': 'Achebe'})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, 'Things Fall Apart')
 
     def test_order_books(self):
@@ -68,8 +75,8 @@ class BookTestCase(APITestCase):
 
         url = reverse('book-list')
         response = self.client.get(url, {'ordering': 'publication_year'})
-        self.assertEqual(response.status_code, 200)
-        books = response.json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        books = response.data
 
         # Ensure publication_year is not None before comparison
         valid_books = [book for book in books if book['publication_year'] is not None]
@@ -82,9 +89,9 @@ class BookTestCase(APITestCase):
         url = reverse('book-create')
         data = {'title': 'New Book', 'publication_year': 2024, 'author': self.author.id}
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, 403)  # HTTP 403 Forbidden for unauthenticated user
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # HTTP 403 Forbidden for unauthenticated user
 
         # Testing with login (should be successful)
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, 201)  # HTTP 201 Created
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # HTTP 201 Created
