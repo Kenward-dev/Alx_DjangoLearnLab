@@ -2,17 +2,19 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from api.models import Book, Author
+from rest_framework.test import APIClient
 
 class BookTestCase(TestCase):
 
     def setUp(self):
         # Create a user and log them in
+        self.client = APIClient()
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client.login(username='testuser', password='testpass')
-        
+
         # Create an author
         self.author = Author.objects.create(name='Chinua Achebe')
-        
+
         # Create a book
         self.book = Book.objects.create(title='Things Fall Apart', publication_year=1958, author=self.author)
 
