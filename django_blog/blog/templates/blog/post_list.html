@@ -6,7 +6,7 @@
     <ul>
         {% for post in posts %}
         <li>
-            <h3><a href="{% url 'viewing' pk=post.pk %}">{{ post.title }}</a></h3>
+            <h3><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h3>
             <!-- Display a snippet of the content -->
             <p>{{ post.content|slice:":100" }}...</p>  
             <small>

@@ -13,8 +13,8 @@
     
     {% if user == post.author %}
         <small>
-            <a href="{% url 'viewing' pk=post.pk %}">Edit</a>
-            <a href="{% url 'deleting' pk=post.pk %}">Delete</a>
+            <a href="{% url 'update_post' pk=post.pk %}">Edit</a>
+            <a href="{% url 'delete_post' pk=post.pk %}">Delete</a>
         </small>
     {% endif %}
     
