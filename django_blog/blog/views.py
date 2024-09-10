@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
 from .forms import CustomUserCreationForm, UserProfileForm, CreatePostForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserChangeForm
@@ -21,7 +20,7 @@ def register(request):
             return redirect('login')  
     else:
         form = CustomUserCreationForm()
-    return render(request, 'blog/register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form})
 
 
 # Profile view
@@ -38,7 +37,7 @@ def profile(request):
             profile_form.save()
             return redirect('profile')
 
-    return render(request, 'blog/profile.html', {'user_form': user_form, 'profile_form': profile_form})
+    return render(request, 'registration/profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
 class HomeView(TemplateView):
     template_name = 'blog/home.html'
@@ -52,7 +51,7 @@ class PostListView(ListView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = CreatePostForm
-    template_name = 'blog/create_post.html'
+    template_name = 'blog/post_form.html'
     success_url = reverse_lazy('posts')
 
     def form_valid(self, form):
@@ -69,7 +68,7 @@ from .models import Post
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    template_name = 'blog/delete_post.html'
+    template_name = 'blog/post_delete.html'
     success_url = reverse_lazy('posts')
 
     def test_func(self):
@@ -79,7 +78,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = CreatePostForm
-    template_name = 'blog/update_post.html'
+    template_name = 'blog/post_editForm.html'
     success_url = reverse_lazy('posts')
 
     def test_func(self):
