@@ -32,6 +32,26 @@ header nav ul li a {
     font-size: 18px;
 }
 
+/* Specific style for the logout button */
+header nav ul li form {
+    display: inline; /* Make sure the form stays inline like the other items */
+}
+
+header nav ul li form button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
+    padding: 0;
+}
+
+header nav ul li form button:hover {
+    text-decoration: underline;
+}
+
 .content {
     margin: 20px;
 }

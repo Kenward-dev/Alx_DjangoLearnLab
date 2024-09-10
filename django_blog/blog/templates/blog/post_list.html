@@ -1,0 +1,23 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h2>Blogs</h2>
+    <br><hr><br>
+    <ul>
+        {% for post in posts %}
+        <li>
+            <h3><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h3>
+            <!-- Display a snippet of the content -->
+            <p>{{ post.content|slice:":100" }}...</p>  
+            <small>
+                <i>
+                    <p>Author: {{ post.author }}</p>
+                </i>
+                <p>{{ post.published_date }}</p>
+            </small>
+        </li>
+        {% empty %}
+        <li>No posts available.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
