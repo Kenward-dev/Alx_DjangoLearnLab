@@ -9,8 +9,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='blog/logout.html'), name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
-    path('post/new/', views.PostCreateView.as_view(), name='post_create'),
-    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post_update'),
-    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
-    path('posts/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
+    path('post/new/', views.PostCreateView.as_view(), name='creating'),
+    path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='editing'),
+    path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='deleting'),
+    path('posts/<int:pk>/', views.PostDetailView.as_view(), name='viewing'),
 ]
