@@ -45,14 +45,14 @@ class HomeView(TemplateView):
 
 class PostListView(ListView):
     model = Post
-    template_name = 'blog/post_list.html'
+    template_name = 'blog/listing.html'
     context_object_name = 'posts' 
     ordering = ['-published_date']
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = CreatePostForm
-    template_name = 'blog/create_post.html'
+    template_name = 'blog/creating.html'
     success_url = reverse_lazy('posts')
 
     def form_valid(self, form):
@@ -61,7 +61,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = 'blog/post_detail.html'
+    template_name = 'blog/viewing.html'
     context_object_name = 'post'
 
 from django.views.generic.edit import DeleteView
@@ -69,7 +69,7 @@ from .models import Post
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    template_name = 'blog/delete_post.html'
+    template_name = 'blog/deleting.html'
     success_url = reverse_lazy('posts')
 
     def test_func(self):
@@ -79,7 +79,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = CreatePostForm
-    template_name = 'blog/update_post.html'
+    template_name = 'blog/editing.html'
     success_url = reverse_lazy('posts')
 
     def test_func(self):
