@@ -13,4 +13,14 @@ urlpatterns = [
     path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post_editForm'),
     path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
+
+    ###########################################
+    ### Patterns for comments
+    ###########################################
+
+    path('posts/<int:post_id>/comments/', views.CommentListView.as_view(), name='comment_list'),
+    path('posts/<int:post_id>/comments/new/', views.CommentCreateView.as_view(), name='comment_create'),
+    path('posts/<int:pk>/comments/comment/', views.CommentDetailView.as_view(), name='comment_detail'),
+    path('posts/<int:pk>/comments/update/', views.CommentUpdateView.as_view(), name='comment_update'),
+    path('posts/<int:pk>/comments/delete/', views.CommentDeleteView.as_view(), name='comment_delete'),
 ]

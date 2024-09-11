@@ -1,0 +1,14 @@
+<!-- blog/templates/blog/comment_form.html -->
+{% extends 'comment/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+    <h2>Create Comment</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,33 @@
+<!-- blog/templates/comment/comment_list.html -->
+{% extends 'comment/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Comments{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h3 class="mb-4">Comments</h3>
+        <a href="{% url 'comment_create' post_id=post.id %}" class="btn btn-primary mb-3">Add Comment</a>
+
+        {% for comment in comments %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ comment.author.username }}</h5>
+                    <p class="card-text">{{ comment.content }}</p>
+                    <p class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</p>
+
+                    <!-- Edit & Delete buttons only for the author of the comment -->
+                    {% if comment.author == user %}
+                        <a href="{% url 'comment_update' comment.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{% url 'comment_delete' comment.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
