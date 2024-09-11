@@ -19,8 +19,8 @@ urlpatterns = [
     ###########################################
 
     path('posts/<int:post_id>/comments/', views.CommentListView.as_view(), name='comment_list'),
-    # UPDATED: Changed 'pk' to 'post_id' to match the error message
-    path('post/<int:post_id>/comments/new/', views.CommentCreateView.as_view(), name='comment_create'),
+    # UPDATED: Changed 'post_id' to 'pk'
+    path('post/<int:pk>/comments/new/', views.CommentCreateView.as_view(), name='comment_create'),
     path('comment/<int:pk>/', views.CommentDetailView.as_view(), name='comment_detail'),
     path('comment/<int:pk>/update/', views.CommentUpdateView.as_view(), name='comment_update'),
     path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment_delete'),

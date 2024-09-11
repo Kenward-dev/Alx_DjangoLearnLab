@@ -102,7 +102,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         # UPDATED: Changed 'pk' to 'post_id'
-        post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        post = get_object_or_404(Post, id=self.kwargs['pk'])
         form.instance.post = post
         return super().form_valid(form)
 
@@ -110,11 +110,11 @@ class CommentListView(ListView):
     model = Comment
     template_name = 'comment/comment_list.html'
     context_object_name = 'comments' 
-    # UPDATED: Changed from 'published_date' to 'created_at'
+    # UPDATED: Changed 'published_date' to 'created_at'
     ordering = ['-created_at']
 
     def get_queryset(self):
-        post_id = self.kwargs.get('post_id')
+        post_id = self.kwargs.get('pk')
         return Comment.objects.filter(post_id=post_id)
 
 class CommentDetailView(DetailView):
