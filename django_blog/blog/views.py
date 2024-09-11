@@ -12,16 +12,13 @@ def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-
             # Save the user but do not log them in
             form.save()  
-
             # Redirect to login page after successful registration
             return redirect('login')  
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
-
 
 # Profile view
 @login_required
@@ -70,7 +67,6 @@ class PostDetailView(DetailView):
         context['comments'] = Comment.objects.filter(post=self.object).order_by('-created_at')
         return context
 
-
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_delete.html'
@@ -80,7 +76,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         # Returns True if the user is the author
         return self.request.user == post.author 
-
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -93,7 +88,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # Returns True if the user is the author
         return self.request.user == post.author  
 
-
 #####################################################
                 ## Comment Views
 #####################################################
@@ -102,24 +96,22 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     form_class = CreateCommentForm
     template_name = 'comment/comment_create.html'
     
-    # Redirect after successful comment creation
     def get_success_url(self):
-        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})  
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})
 
     def form_valid(self, form):
-        # Set the author to the logged-in user
-        form.instance.author = self.request.user  
-        # Get the post being commented on
-        post = get_object_or_404(Post, id=self.kwargs['post_id'])  
-        # Associate the comment with the post
-        form.instance.post = post  
+        form.instance.author = self.request.user
+        # UPDATED: Changed 'pk' to 'post_id'
+        post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        form.instance.post = post
         return super().form_valid(form)
 
 class CommentListView(ListView):
     model = Comment
     template_name = 'comment/comment_list.html'
     context_object_name = 'comments' 
-    ordering = ['-published_date']
+    # UPDATED: Changed from 'published_date' to 'created_at'
+    ordering = ['-created_at']
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
@@ -130,18 +122,13 @@ class CommentDetailView(DetailView):
     template_name = 'comment/comment_detail.html'
     context_object_name = 'comment'
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Fetch all comments related to the post this comment belongs to
-        context['comments'] = Comment.objects.filter(post=self.object.post)
-        return context
-
-
+    # REMOVED: get_context_data method
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
     template_name = 'comment/comment_delete.html'
     
+    # UPDATED: Changed to use get_success_url method
     def get_success_url(self):
         return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})
 
@@ -154,9 +141,13 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
     form_class = CreateCommentForm
     template_name = 'comment/comment_update.html'
-    success_url = reverse_lazy('posts')
+    # REMOVED: success_url = reverse_lazy('posts')
+
+    # ADDED: New get_success_url method
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})
 
     def test_func(self):
         comment = self.get_object()
         # Returns True if the user is the author
-        return self.request.user == comment.author 
+        return self.request.user == comment.author
