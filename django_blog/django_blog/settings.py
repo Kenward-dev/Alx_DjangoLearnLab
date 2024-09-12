@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'blog',
     'crispy_forms',
     'crispy_bootstrap4',
+    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,5 @@ LOGOUT_REDIRECT_URL = '/'
 
 #Crispy-forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+TAGGIT_CASE_INSENSITIVE = True

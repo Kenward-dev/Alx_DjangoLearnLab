@@ -3,9 +3,10 @@ from .forms import CustomUserCreationForm, UserProfileForm, CreatePostForm, Crea
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserChangeForm
 from django.views.generic import TemplateView, ListView, DeleteView, UpdateView, DetailView, CreateView
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 
 # Registration view
 def register(request):
@@ -151,3 +152,30 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         comment = self.get_object()
         # Returns True if the user is the author
         return self.request.user == comment.author
+    
+################################
+    #####   Search view #####
+
+def search_view(request):
+    query = request.GET.get('q', '')
+    search_results = Post.objects.filter(
+        Q(title__icontains=query) |
+        Q(content__icontains=query) |
+        # Search through tags
+        Q(tags__name__icontains=query)  
+    ).distinct()
+
+    context = {
+        'query': query,
+        'search_results': search_results,
+    }
+    return render(request, 'blog/search_results.html', context)
+
+class PostListByTagView(ListView):
+    model = Post
+    template_name = 'blog/post_list_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs['tag_slug']
+        return Post.objects.filter(tags__slug=tag_slug)

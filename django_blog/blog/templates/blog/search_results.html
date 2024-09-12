@@ -1,0 +1,16 @@
+<!-- blog/templates/blog/search_results.html -->
+{% extends 'blog/base.html' %}
+<h1>Search Results for "{{ query }}"</h1>
+
+{% if search_results %}
+    {% for post in search_results %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="card-title"><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h2>
+                <p class="card-text">{{ post.content|truncatewords:30 }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No results found.</p>
+{% endif %}
