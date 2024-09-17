@@ -75,8 +75,8 @@ class FeedView(generics.ListAPIView):
 class LikeViewSet(viewsets.ViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
-    def create(self, request, post_id=None):
-        post = generics.get_object_or_404(Post, pk=post_id)
+    def create(self, request, pk=None):
+        post = generics.get_object_or_404(Post, pk=pk)
         like, created = Like.objects.get_or_create(user=request.user, post=post)
         if created:
             Notification.objects.create(
@@ -88,8 +88,8 @@ class LikeViewSet(viewsets.ViewSet):
             return Response({'status': 'post liked'}, status=status.HTTP_201_CREATED)
         return Response({'status': 'post already liked'}, status=status.HTTP_200_OK)
 
-    def destroy(self, request, post_id=None):
-        post = generics.get_object_or_404(Post, pk=post_id)
+    def destroy(self, request, pk=None):
+        post = generics.get_object_or_404(Post, pk=pk)
         like = Like.objects.filter(user=request.user, post=post).first()
         if like:
             like.delete()
