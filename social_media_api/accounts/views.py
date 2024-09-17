@@ -2,10 +2,9 @@ from rest_framework import generics, permissions, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from .serializers import UserSerializer
-from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from .models import CustomUser
+from django.shortcuts import get_object_or_404
+from .models import CustomUser
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -26,27 +25,22 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
     
-    
-class FollowUserView(APIView):
+class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
 
-    def post(self, request, user_id):
-        try:
-            user_to_follow = User.objects.get(id=user_id)
-            if request.user != user_to_follow:
-                request.user.following.add(user_to_follow)
-                return Response(status=status.HTTP_200_OK)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-class UnfollowUserView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def post(self, request, user_id):
-        try:
-            user_to_unfollow = User.objects.get(id=user_id)
-            request.user.following.remove(user_to_unfollow)
+    def post(self, request, *args, **kwargs):
+        user_to_follow = self.get_object()
+        if request.user != user_to_follow:
+            request.user.following.add(user_to_follow)
             return Response(status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class UnfollowUserView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        user_to_unfollow = self.get_object()
+        request.user.following.remove(user_to_unfollow)
+        return Response(status=status.HTTP_200_OK)    
